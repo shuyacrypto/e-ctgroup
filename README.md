@@ -28,6 +28,7 @@ Static website for E-CT Group Ltd. Plain HTML and CSS, no build step, no depende
 | `404.html` | Page shown for broken links |
 | `assets/site.css` | Styles and self-hosted font declarations |
 | `assets/site.js` | Enquiry form and mobile menu behaviour |
+| `api/enquiry.js` | Sends enquiry form submissions to team@e-ctgroup.co.uk via Resend |
 | `assets/fonts/` | Manrope and JetBrains Mono (SIL Open Font License) |
 | `assets/img/` | Logos, product logos and the social sharing image |
 | `favicon.svg`, `favicon-32.png`, `apple-touch-icon.png`, `icon-512.png`, `site.webmanifest` | Browser and home-screen icons |
@@ -35,7 +36,11 @@ Static website for E-CT Group Ltd. Plain HTML and CSS, no build step, no depende
 | `vercel.json` | Clean URLs, security headers and font caching |
 
 ## Good to know
-- **The enquiry form opens the visitor's email app** with their message addressed to team@e-ctgroup.co.uk. Nothing is stored on the website. If you later want messages delivered without the email app, the form can be connected to a Vercel function and an email service.
+- **The enquiry form emails team@e-ctgroup.co.uk** through `api/enquiry.js`, a Vercel function that sends via [Resend](https://resend.com). Nothing is stored on the website. If sending fails, the form falls back to opening the visitor's email app. To set it up:
+  1. Create a Resend account, add the domain `e-ctgroup.co.uk` under **Domains**, and add the DNS records it shows at IONOS. Wait until the domain shows as verified.
+  2. Create an API key in Resend (sending access is enough).
+  3. In Vercel, go to **Settings → Environment Variables** and add `RESEND_API_KEY` (the key) and `ENQUIRY_FROM` (for example `E-CT Group website <website@e-ctgroup.co.uk>`). Then redeploy.
+  4. Send a test enquiry from the live site and check it arrives. Replying to the email replies to the visitor.
 - **No cookies, analytics or third-party requests.** Fonts and images are served from the site itself. If you add analytics later, update `privacy.html` and the Content-Security-Policy in `vercel.json`.
 - **Security headers** in `vercel.json` block the site from being framed and only allow scripts, styles and fonts from the site itself. If something you add stops working, check the browser console for a Content-Security-Policy message.
 - **Before going live**, have the privacy notice reviewed, and add your ICO registration number to the footer once you have it.
